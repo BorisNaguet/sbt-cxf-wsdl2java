@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/BorisNaguet/sbt-cxf-wsdl2java.svg?branch=master)](https://travis-ci.org/BorisNaguet/sbt-cxf-wsdl2java)
-[![Download](https://api.bintray.com/packages/borisnaguet/maven/sbt-cxf-wsdl2java/images/download.svg) ](https://bintray.com/borisnaguet/maven/sbt-cxf-wsdl2java/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/borisnaguet/ivy/sbt-cxf-wsdl2java/images/download.svg) ](https://bintray.com/borisnaguet/ivy/sbt-cxf-wsdl2java/_latestVersion)
 
 sbt-cxf-wsdl2java
 =================
