@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/BorisNaguet/sbt-cxf-wsdl2java.svg?branch=master)](https://travis-ci.org/BorisNaguet/sbt-cxf-wsdl2java)
+[![Download](https://api.bintray.com/packages/borisnaguet/maven/sbt-cxf-wsdl2java/images/download.svg) ](https://bintray.com/borisnaguet/maven/sbt-cxf-wsdl2java/_latestVersion)
+
 sbt-cxf-wsdl2java
 =================
 
@@ -15,11 +18,10 @@ For the moment, this fork only updates scala (to 2.10.6 because it's the version
 Add plugin to *project/plugins.sbt*:
 
 ```scala
-
-resolvers += "Sonatype Repository" at "https://oss.sonatype.org/content/groups/public"
-
-addSbtPlugin("io.github.borisnaguet" % "sbt-cxf-wsdl2java" % "0.2.0-SNAPSHOT")
+addSbtPlugin("io.github.borisnaguet" % "sbt-cxf-wsdl2java" % "0.2.0")
 ```
+
+This plugin is available on Bintray's JCenter
 
 ## Configuration
 

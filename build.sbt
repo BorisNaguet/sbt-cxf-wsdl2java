@@ -24,7 +24,7 @@ pomIncludeRepository := { _ => false }
 
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
-bintrayRepository := "maven"
+bintrayRepository := "ivy"
 bintrayPackageLabels := Seq("sbt", "plugin", "cxf")
 
 pomExtra := (
