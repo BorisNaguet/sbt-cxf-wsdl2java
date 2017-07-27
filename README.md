@@ -22,8 +22,6 @@ resolvers ++= Seq(Resolver.bintrayIvyRepo("borisnaguet", "ivy"))
 addSbtPlugin("io.github.borisnaguet" % "sbt-cxf-wsdl2java" % "0.2.0")
 ```
 
-This plugin is available on Bintray's JCenter
-
 ## Configuration
 
 Plugin keys are prefixed with "cxf".

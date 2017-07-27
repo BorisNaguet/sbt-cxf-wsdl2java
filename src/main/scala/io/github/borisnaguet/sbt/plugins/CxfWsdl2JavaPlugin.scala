@@ -24,7 +24,7 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
     lazy val wsdl2javaDefaultArgs = settingKey[Seq[String]]("wsdl2java default arguments")
     lazy val cxfParallelExecution = settingKey[Boolean]("execute wsdl2java commands in parallel")
 
-    case class CxfWsdl(file: File, args: Seq[String], key: String) {
+    case class CxfWsdl(file: File, args: Seq[String], key: String, systemProperties: Seq[String] = Seq()) {
       def outputDirectory(basedir: File) = new File(basedir, key).getAbsoluteFile
     }
   }
@@ -78,7 +78,7 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
         s.log.debug("Removing output directory for " + id + " ...")
         IO.delete(output)
         s.log.info("Compiling " + id)
-        val cmd = Seq("java", "-cp", classpath, "-Dfile.encoding=UTF-8", "org.apache.cxf.tools.wsdlto.WSDLToJava") ++ args
+        val cmd = Seq("java", "-cp", classpath, "-Dfile.encoding=UTF-8") ++ wsdl.systemProperties ++ Seq("org.apache.cxf.tools.wsdlto.WSDLToJava") ++ args
         s.log.debug(cmd.toString())
         cmd ! s.log
         s.log.info("Finished " + id)
