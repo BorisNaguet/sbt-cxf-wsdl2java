@@ -8,7 +8,7 @@ version := "0.2.0"
 
 scalaVersion := "2.10.6"
 
-publishMavenStyle := true
+publishMavenStyle := false
 
 //publishTo := {
 //  val nexus = "https://oss.sonatype.org/"
