@@ -18,6 +18,7 @@ For the moment, this fork only updates scala (to 2.10.6 because it's the version
 Add plugin to *project/plugins.sbt*:
 
 ```scala
+resolvers ++= Seq(Resolver.bintrayIvyRepo("borisnaguet", "ivy"))
 addSbtPlugin("io.github.borisnaguet" % "sbt-cxf-wsdl2java" % "0.2.0")
 ```
 
