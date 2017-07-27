@@ -1,4 +1,4 @@
-package com.ebiznext.sbt.plugins
+package io.github.borisnaguet.sbt.plugins
 
 import java.io.File
 
@@ -32,7 +32,7 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
   import autoImport._
 
   val cxfDefaults: Seq[Def.Setting[_]] = Seq(
-    cxfVersion := "3.1.2",
+    cxfVersion := "3.1.12",
     libraryDependencies ++= Seq(
       "org.apache.cxf" % "cxf-tools-wsdlto-core" % cxfVersion.value % CxfConfig.name,
       "org.apache.cxf" % "cxf-tools-wsdlto-databinding-jaxb" % cxfVersion.value % CxfConfig.name,
@@ -45,7 +45,7 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
 
   private lazy val cxfConfig = Seq(
     // initialisation de la clef correspondante au répertoire source dans lequel les fichiers générés seront copiés
-    sourceManaged in CxfConfig := sourceManaged.value / "cxf",
+    sourceManaged in CxfConfig := crossTarget.value / "cxf",
     // ajout de ce répertoire dans la liste des répertoires source à prendre en compte lors de la compilation
     managedSourceDirectories in Compile += {
       (sourceManaged in CxfConfig).value
@@ -57,7 +57,7 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
     wsdl2java := {
       val s: TaskStreams = streams.value
       val classpath: String = (managedClasspath in wsdl2java).value.files.map(_.getAbsolutePath).mkString(System.getProperty("path.separator"))
-      val basedir: File = target.value / "cxf"
+      val basedir: File = crossTarget.value / "cxf_tmp"
       IO.createDirectory(basedir)
 
       def outputDir(wsdl: CxfWsdl): File = wsdl.outputDirectory(basedir)

@@ -2,28 +2,33 @@ sbtPlugin := true
 
 name := "sbt-cxf-wsdl2java"
 
-organization := "com.ebiznext.sbt.plugins"
+organization := "io.github.borisnaguet"
 
-version := "0.1.5-SNAPSHOT"
+version := "0.2.0-SNAPSHOT"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.6"
 
 publishMavenStyle := true
 
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (version.value.trim.endsWith("SNAPSHOT"))
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-}
+//publishTo := {
+//  val nexus = "https://oss.sonatype.org/"
+//  if (version.value.trim.endsWith("SNAPSHOT"))
+//    Some("snapshots" at nexus + "content/repositories/snapshots")
+//  else
+//    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+//}
 
 publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
 
+licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
+
+bintrayRepository := "maven"
+bintrayPackageLabels := Seq("sbt", "plugin", "cxf")
+
 pomExtra := (
-  <url>https://github.com/ebiznext/sbt-cxf-wsdl2java</url>
+  <url>https://github.com/BorisNaguet/sbt-cxf-wsdl2java</url>
   <licenses>
     <license>
       <name>MIT</name>
@@ -32,13 +37,18 @@ pomExtra := (
     </license>
   </licenses>
   <scm>
-    <url>git@github.com:ebiznext/sbt-cxf-wsdl2java.git</url>
-    <connection>scm:git:git@github.com:ebiznext/sbt-cxf-wsdl2java.git</connection>
+    <url>git@github.com:BorisNaguet/sbt-cxf-wsdl2java.git</url>
+    <connection>scm:git:git@github.com:BorisNaguet/sbt-cxf-wsdl2java.git</connection>
   </scm>
   <developers>
     <developer>
       <id>smanciot</id>
       <name>Stéphane Manciot</name>
       <url>http://www.linkedin.com/in/smanciot</url>
+    </developer>
+    <developer>
+      <id>BorisNaguet</id>
+      <name>Boris Naguet</name>
+      <url>https://github.com/BorisNaguet</url>
     </developer>
   </developers>)

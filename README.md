@@ -1,7 +1,9 @@
 sbt-cxf-wsdl2java
 =================
 
-an sbt plugin for generating java artifacts from WSDL using cxf
+An sbt plugin for generating java artifacts from WSDL using cxf.
+
+For the moment, this fork only updates scala (to 2.10.6 because it's the version used to RUN sbt but your project can be 2.11 or 2.12), sbt (to 0.13.15) and CXF (to 3.1.12).
 
 ## Requirements
 
@@ -16,7 +18,7 @@ Add plugin to *project/plugins.sbt*:
 
 resolvers += "Sonatype Repository" at "https://oss.sonatype.org/content/groups/public"
 
-addSbtPlugin("com.ebiznext.sbt.plugins" % "sbt-cxf-wsdl2java" % "0.1.5")
+addSbtPlugin("io.github.borisnaguet" % "sbt-cxf-wsdl2java" % "0.2.0-SNAPSHOT")
 ```
 
 ## Configuration
@@ -30,7 +32,7 @@ to be generated and the output directory for multiple services are the same
 ### Add Wsdls
 
 ```scala
-lazy val wsclientPackage := "com.ebiznext.sbt.sample"
+lazy val wsclientPackage := "io.github.borisnaguet.sample"
 
 cxfWsdls := Seq(
       CxfWsdl((resourceDirectory in Compile).value / "Sample.wsdl", Seq("-p",  wsclientPackage), "unique wsdl id"),
