@@ -24,6 +24,12 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
     lazy val wsdl2javaDefaultArgs = settingKey[Seq[String]]("wsdl2java default arguments")
     lazy val cxfParallelExecution = settingKey[Boolean]("execute wsdl2java commands in parallel")
 
+    lazy val cxfHttpProxyHost = settingKey[String]("set the http proxy host for the wsdl2java command (default from SBT_OPTS)")
+    lazy val cxfHttpProxyPort = settingKey[Integer]("set the http proxy port for the wsdl2java command (default from SBT_OPTS)")
+    lazy val cxfHttpsProxyHost = settingKey[String]("set the https proxy host for the wsdl2java command (default from SBT_OPTS)")
+    lazy val cxfHttpsProxyPort = settingKey[Integer]("set the https proxy port for the wsdl2java command (default from SBT_OPTS)")
+    lazy val cxfNoProxy = settingKey[String]("set the noProxy for the wsdl2java command (default from SBT_OPTS)")
+
     case class CxfWsdl(file: File, args: Seq[String], key: String, systemProperties: Seq[String] = Seq()) {
       def outputDirectory(basedir: File) = new File(basedir, key).getAbsoluteFile
     }
@@ -40,7 +46,13 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
     ),
     cxfWsdls := Nil,
     wsdl2javaDefaultArgs := Seq("-verbose", "-autoNameResolution", "-exsh", "true", "-fe", "jaxws21", "-client"),
-    cxfParallelExecution := true
+    cxfParallelExecution := true,
+
+    cxfHttpProxyHost := System.getProperty("http.proxyHost", ""),
+    cxfHttpProxyPort := Integer.getInteger("http.proxyPort", 0),
+    cxfHttpsProxyHost := System.getProperty("https.proxyHost", ""),
+    cxfHttpsProxyPort := Integer.getInteger("https.proxyPort", 0),
+    cxfNoProxy := System.getProperty("http.nonProxyHosts", "")
   )
 
   private lazy val cxfConfig = Seq(
@@ -78,7 +90,17 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
         s.log.debug("Removing output directory for " + id + " ...")
         IO.delete(output)
         s.log.info("Compiling " + id)
-        val cmd = Seq("java", "-cp", classpath, "-Dfile.encoding=UTF-8") ++ wsdl.systemProperties ++ Seq("org.apache.cxf.tools.wsdlto.WSDLToJava") ++ args
+
+        val sysProps = Seq("-Dfile.encoding=UTF-8") ++
+          (if(cxfHttpProxyHost.value.length > 0) Seq(s"-Dhttp.proxyHost=${cxfHttpProxyHost.value}" ) else Nil) ++
+          (if(cxfHttpProxyPort.value > 0) Seq(s"-Dhttp.proxyPort=${cxfHttpProxyPort.value}") else Nil) ++
+          (if(cxfHttpsProxyHost.value.length > 0) Seq(s"-Dhttps.proxyHost=${cxfHttpsProxyHost.value}") else Nil) ++
+          (if(cxfHttpsProxyPort.value > 0) Seq(s"-Dhttps.proxyPort=${cxfHttpsProxyPort.value}") else Nil) ++
+          (if(cxfNoProxy.value.length > 0) Seq(s"-Dhttp.nonProxyHosts=${cxfNoProxy.value}") else Nil) ++
+          wsdl.systemProperties
+
+        val cmd = Seq("java", "-cp", classpath) ++ sysProps ++ Seq("org.apache.cxf.tools.wsdlto.WSDLToJava") ++ args
+
         s.log.debug(cmd.toString())
         cmd ! s.log
         s.log.info("Finished " + id)
