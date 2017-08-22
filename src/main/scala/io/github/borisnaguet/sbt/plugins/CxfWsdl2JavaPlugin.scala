@@ -20,7 +20,8 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
 
     lazy val cxfVersion = settingKey[String]("cxf version")
     lazy val wsdl2java = taskKey[Seq[File]]("Generates java files from wsdls")
-    lazy val cxfWsdls = settingKey[Seq[CxfWsdl]]("wsdls to generate java files from")
+    lazy val cxfWsdls = settingKey[Seq[CxfWsdl]]("wsdls file paths to generate java files from")
+    lazy val cxfWsdlsUrls = settingKey[Seq[CxfWsdlUrl]]("wsdls URLs to generate java files from")
     lazy val wsdl2javaDefaultArgs = settingKey[Seq[String]]("wsdl2java default arguments")
     lazy val cxfParallelExecution = settingKey[Boolean]("execute wsdl2java commands in parallel")
 
@@ -30,8 +31,18 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
     lazy val cxfHttpsProxyPort = settingKey[Integer]("set the https proxy port for the wsdl2java command (default from SBT_OPTS)")
     lazy val cxfNoProxy = settingKey[String]("set the noProxy for the wsdl2java command (default from SBT_OPTS)")
 
-    case class CxfWsdl(file: File, args: Seq[String], key: String, systemProperties: Seq[String] = Seq()) {
-      def outputDirectory(basedir: File) = new File(basedir, key).getAbsoluteFile
+    trait ICxfWsdl {
+      val key : String
+      val args: Seq[String]
+      val systemProperties: Seq[String]
+
+      def outputDir(basedir: File) = new File(basedir, key).getAbsoluteFile
+    }
+
+    case class CxfWsdl(file: File, args: Seq[String], key: String, systemProperties: Seq[String] = Seq()) extends ICxfWsdl {
+    }
+
+    case class CxfWsdlUrl(url: URL, args: Seq[String], key: String, systemProperties: Seq[String] = Seq()) extends ICxfWsdl {
     }
   }
 
@@ -45,6 +56,7 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
       "org.apache.cxf" % "cxf-tools-wsdlto-frontend-jaxws" % cxfVersion.value % CxfConfig.name
     ),
     cxfWsdls := Nil,
+    cxfWsdlsUrls := Nil,
     wsdl2javaDefaultArgs := Seq("-verbose", "-autoNameResolution", "-exsh", "true", "-fe", "jaxws21", "-client"),
     cxfParallelExecution := true,
 
@@ -72,21 +84,12 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
       val basedir: File = crossTarget.value / "cxf_tmp"
       IO.createDirectory(basedir)
 
-      def outputDir(wsdl: CxfWsdl): File = wsdl.outputDirectory(basedir)
+      def outputDir(wsdl: ICxfWsdl): File = wsdl.outputDir(basedir)
 
-      val wsdlColl = if (cxfParallelExecution.value) cxfWsdls.value.par else cxfWsdls.value
-      val (updated, notModified) = wsdlColl.partition( wsdl =>
-        wsdl.file.lastModified() > outputDir(wsdl).lastModified()
-      )
-
-      notModified.foreach(wsdl =>
-        s.log.debug("Skipping " + wsdl.key)
-      )
-
-      updated.foreach { wsdl =>
+      def processWsdl(wsdl : ICxfWsdl, wsdlPath: String): Unit = {
         val id: String = wsdl.key
         val output = outputDir(wsdl)
-        val args: Seq[String] = Seq("-d", output.getAbsolutePath) ++ wsdl2javaDefaultArgs.value ++ wsdl.args :+ wsdl.file.getAbsolutePath
+        val args: Seq[String] = Seq("-d", output.getAbsolutePath) ++ wsdl2javaDefaultArgs.value ++ wsdl.args :+ wsdlPath
         s.log.debug("Removing output directory for " + id + " ...")
         IO.delete(output)
         s.log.info("Compiling " + id)
@@ -106,6 +109,25 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
         s.log.info("Finished " + id)
         IO.copyDirectory(output, (sourceManaged in CxfConfig).value, overwrite = true)
       }
+
+      val wsdlColl = if (cxfParallelExecution.value) cxfWsdls.value.par else cxfWsdls.value
+      val (updated, notModified) = wsdlColl.partition( wsdl =>
+        wsdl.file.lastModified() > outputDir(wsdl).lastModified()
+      )
+
+      notModified.foreach(wsdl =>
+        s.log.debug("Skipping " + wsdl.key)
+      )
+
+      updated.foreach { wsdlFile =>
+        processWsdl(wsdlFile, wsdlFile.file.getAbsolutePath)
+      }
+
+      val wsdlCollUrl = if (cxfParallelExecution.value) cxfWsdlsUrls.value.par else cxfWsdlsUrls.value
+      wsdlCollUrl.foreach { wsdlUrl =>
+        processWsdl(wsdlUrl, wsdlUrl.url.toString)
+      }
+
       ((sourceManaged in CxfConfig).value ** "*.java").get
     },
     sourceGenerators in Compile <+= wsdl2java
