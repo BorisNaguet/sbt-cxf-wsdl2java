@@ -53,7 +53,8 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
     libraryDependencies ++= Seq(
       "org.apache.cxf" % "cxf-tools-wsdlto-core" % cxfVersion.value % CxfConfig.name,
       "org.apache.cxf" % "cxf-tools-wsdlto-databinding-jaxb" % cxfVersion.value % CxfConfig.name,
-      "org.apache.cxf" % "cxf-tools-wsdlto-frontend-jaxws" % cxfVersion.value % CxfConfig.name
+      "org.apache.cxf" % "cxf-tools-wsdlto-frontend-jaxws" % cxfVersion.value % CxfConfig.name,
+      "org.apache.cxf.xjcplugins" % "cxf-xjc-ts" % "3.1.0" % CxfConfig.name
     ),
     cxfWsdls := Nil,
     cxfWsdlsUrls := Nil,
