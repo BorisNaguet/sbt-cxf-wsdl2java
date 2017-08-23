@@ -51,10 +51,12 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
   val cxfDefaults: Seq[Def.Setting[_]] = Seq(
     cxfVersion := "3.1.12",
     libraryDependencies ++= Seq(
+      "ch.qos.logback" % "logback-classic" % "1.2.3" % CxfConfig.name,
       "org.apache.cxf" % "cxf-tools-wsdlto-core" % cxfVersion.value % CxfConfig.name,
       "org.apache.cxf" % "cxf-tools-wsdlto-databinding-jaxb" % cxfVersion.value % CxfConfig.name,
       "org.apache.cxf" % "cxf-tools-wsdlto-frontend-jaxws" % cxfVersion.value % CxfConfig.name,
-      "org.apache.cxf.xjcplugins" % "cxf-xjc-ts" % "3.1.0" % CxfConfig.name
+      "org.apache.cxf.xjcplugins" % "cxf-xjc-ts" % "3.1.0" % CxfConfig.name,
+      "org.jvnet.jaxb2_commons" % "jaxb2-basics" % "0.11.1" % CxfConfig.name
     ),
     cxfWsdls := Nil,
     cxfWsdlsUrls := Nil,
