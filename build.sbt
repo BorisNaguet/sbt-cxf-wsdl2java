@@ -4,7 +4,7 @@ name := "sbt-cxf-wsdl2java"
 
 organization := "io.github.borisnaguet"
 
-version := "0.2.5"
+version := "0.2.6-SNAPSHOT"
 
 scalaVersion := "2.10.6"
 
