@@ -27,8 +27,9 @@ addSbtPlugin("io.github.borisnaguet" % "sbt-cxf-wsdl2java" % "0.2.0")
 Plugin keys are prefixed with "cxf".
 
 * **wsdl2javaDefaultArgs**: override the default arguments passed to wsdl2java, supply another Seq[String] of arguments.
-* **cxfParallelExecution**: set to *false* to disable running wsdl2java commands in parallel. Useful if there are duplicate classes
-to be generated and the output directory for multiple services are the same
+* **cxfParallelExecution**: set to *false* to disable running wsdl2java commands in parallel. Useful if there are duplicate classes to be generated and the output directory for multiple services are the same
+* **cxfVersion**: override the version of cxf to be used
+* **cxfJaxb2BasicsVersion**: override the version of jaxb2_commons to be used
 
 ### Add Wsdls
 
@@ -36,8 +37,22 @@ to be generated and the output directory for multiple services are the same
 lazy val wsclientPackage := "io.github.borisnaguet.sample"
 
 cxfWsdls := Seq(
-      CxfWsdl((resourceDirectory in Compile).value / "Sample.wsdl", Seq("-p",  wsclientPackage), "unique wsdl id"),
-      ...
+  CxfWsdl((resourceDirectory in Compile).value / "Sample.wsdl", Seq("-p",  wsclientPackage), "unique wsdl id"),
+  // add -wsdlLocation for the wsdls to be loaded by the classloader (portable solution)
+  CxfWsdl(
+    (resourceDirectory in Compile).value / "wsdls/other.wsdl",
+    Seq("-p",  "com.company.project", "-wsdlLocation", "wsdls/other.wsdl"),
+    "other wsdl id"
+  ),
+  ...
+)
+
+cxfWsdlsUrls := Seq(
+  CxfWsdlUrl(
+    url("http://www.my-weather-channel.org/global-weather?wsdl"),
+    Seq("-p", "global-weather"),
+    "org.my-weather-channel.global-weather"
+  )
 )
 ```
 

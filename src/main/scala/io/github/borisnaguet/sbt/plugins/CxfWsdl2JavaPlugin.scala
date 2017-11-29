@@ -6,9 +6,9 @@ import sbt.Keys._
 import sbt._
 
 /**
- * @author stephane.manciot@ebiznext.com
- *
- */
+  * @author stephane.manciot@ebiznext.com
+  *
+  */
 object CxfWsdl2JavaPlugin extends AutoPlugin {
 
   override def requires = sbt.plugins.JvmPlugin
@@ -19,6 +19,10 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
     lazy val CxfConfig = config("cxf").hide
 
     lazy val cxfVersion = settingKey[String]("cxf version")
+    lazy val cxfXjcTsVersion = settingKey[String]("cxf XJC ToString Plugin version")
+    lazy val cxfJaxb2BasicsVersion = settingKey[String]("org.jvnet.jaxb2_commons:jaxb2-basics version")
+    lazy val cxfLogbackVersion = settingKey[String]("org.jvnet.jaxb2_commons:jaxb2-basics version")
+    lazy val cxfFilePath = settingKey[File]("bas path of generated sources")
     lazy val wsdl2java = taskKey[Seq[File]]("Generates java files from wsdls")
     lazy val cxfWsdls = settingKey[Seq[CxfWsdl]]("wsdls file paths to generate java files from")
     lazy val cxfWsdlsUrls = settingKey[Seq[CxfWsdlUrl]]("wsdls URLs to generate java files from")
@@ -49,14 +53,18 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
   import autoImport._
 
   val cxfDefaults: Seq[Def.Setting[_]] = Seq(
-    cxfVersion := "3.1.12",
+    cxfVersion := "3.2.0",
+    cxfXjcTsVersion := cxfVersion.value,
+    cxfJaxb2BasicsVersion := "1.11.1",
+    cxfLogbackVersion := "1.2.3",
+    cxfFilePath := crossTarget.value / "cxf",
     libraryDependencies ++= Seq(
-      "ch.qos.logback" % "logback-classic" % "1.2.3" % CxfConfig.name,
+      "ch.qos.logback" % "logback-classic" % cxfLogbackVersion.value % CxfConfig.name,
       "org.apache.cxf" % "cxf-tools-wsdlto-core" % cxfVersion.value % CxfConfig.name,
       "org.apache.cxf" % "cxf-tools-wsdlto-databinding-jaxb" % cxfVersion.value % CxfConfig.name,
       "org.apache.cxf" % "cxf-tools-wsdlto-frontend-jaxws" % cxfVersion.value % CxfConfig.name,
-      "org.apache.cxf.xjcplugins" % "cxf-xjc-ts" % "3.1.0" % CxfConfig.name,
-      "org.jvnet.jaxb2_commons" % "jaxb2-basics" % "0.11.1" % CxfConfig.name
+      "org.apache.cxf.xjcplugins" % "cxf-xjc-ts" % cxfVersion.value % CxfConfig.name,
+      "org.jvnet.jaxb2_commons" % "jaxb2-basics" % cxfJaxb2BasicsVersion.value % CxfConfig.name
     ),
     cxfWsdls := Nil,
     cxfWsdlsUrls := Nil,
@@ -72,13 +80,13 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
 
   private lazy val cxfConfig = Seq(
     // initialisation de la clef correspondante au répertoire source dans lequel les fichiers générés seront copiés
-    sourceManaged in CxfConfig := crossTarget.value / "cxf",
+    sourceManaged in CxfConfig := cxfFilePath.value,
     // ajout de ce répertoire dans la liste des répertoires source à prendre en compte lors de la compilation
     managedSourceDirectories in Compile += {
       (sourceManaged in CxfConfig).value
     },
-    managedClasspath in wsdl2java <<= (classpathTypes in wsdl2java, update).map { (ct, report) =>
-      Classpaths.managedJars(CxfConfig, ct, report)
+    managedClasspath in wsdl2java := {
+      Classpaths.managedJars(CxfConfig, (classpathTypes in wsdl2java).value, update.value)
     },
     // définition de la tâche wsdl2java
     wsdl2java := {
@@ -133,7 +141,7 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
 
       ((sourceManaged in CxfConfig).value ** "*.java").get
     },
-    sourceGenerators in Compile <+= wsdl2java
+    (sourceGenerators in Compile) += wsdl2java
   )
 
   override lazy val projectSettings =
