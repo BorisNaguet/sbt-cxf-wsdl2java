@@ -4,7 +4,7 @@ name := "sbt-cxf-wsdl2java"
 
 organization := "io.github.borisnaguet"
 
-version := "0.2.7-SNAPSHOT"
+version := "0.2.7"
 
 crossSbtVersions := List("0.13.17", "1.1.1")
 
