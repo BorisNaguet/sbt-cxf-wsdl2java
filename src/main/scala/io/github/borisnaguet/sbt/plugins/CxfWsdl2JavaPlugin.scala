@@ -116,7 +116,7 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
         val cmd = Seq("java", "-cp", classpath) ++ sysProps ++ Seq("org.apache.cxf.tools.wsdlto.WSDLToJava") ++ args
 
         s.log.debug(cmd.toString())
-        cmd ! s.log
+        cmd.foreach(s.log(_))
         s.log.info("Finished " + id)
         IO.copyDirectory(output, (sourceManaged in CxfConfig).value, overwrite = true)
       }
