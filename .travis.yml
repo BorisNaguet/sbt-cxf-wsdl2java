@@ -2,10 +2,10 @@ git:
   depth: 5
 language: scala
 scala:
-- 2.10.6
+- 2.12.4
 jdk:
 - oraclejdk8
-script: sbt clean compile publish
+script: sbt clean compile ^package
 env:
   global:
   - secure: xUlXGpQOsNg5NYeIrq8ATJhnf7FkCKugMkT0lq0abvyXPzT8SA6UNSoxPKJZ1J7ntkzKoaN4jBsEChn5f0VXS7D4JlxmVOcLmc8fmd6W7KxyUXG7kfjLrop8inqp/U/TZN5WKblMmGqjV6FYuFG2oqc5SUuki2nrr8IpOcdj0vT8il/TiF1qgje0EfSGuyniJ2MrQ5TvExss9z7k+4Ujw01gNcPoUc5b5csjiQreym9c+49MWECb5Qwy1t96e7Icz/5hlSlRXCkcbO4wlO3R9dHs2Xzs78WbJ9Zft3wRnxQFeChHyB5JD6G1qLOtUQD6ChxoMgST4NKNrxFXiigUyMTW2HyA4WDypBQXLoQLD1lGQ1dXsqPQ+F9bPwFh/yO/k4F55BojkDPZHrDKZOjjlzIvDd+uwcHJkj4QjRb11+5M4RasyYM/Gd2oDg1OJylM1no1C/sm+kWtbKh0X4VKVFiTsiOocAM5DIzBPEQr6Hotw/UysTKChAVYmOzB+i3OrVEQrMbPrXi2HinK6JhIdYR5579acLZTQsGUM7cHLtoCHA/wHByf8OGobyydyt0Zhq4fNfIHnLV75M54UuzlIzEfGNQsXCnJn2ye9N4/UKxdn4Ydkk/OgYVMtjAT+q4xkxmXKnl3pdG0A2Yw2gEIT7SGrP5OK7nKI3fy3jGq8h4=
