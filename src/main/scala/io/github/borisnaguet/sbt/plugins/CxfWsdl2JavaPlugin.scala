@@ -116,7 +116,8 @@ object CxfWsdl2JavaPlugin extends AutoPlugin {
         val cmd = Seq("java", "-cp", classpath) ++ sysProps ++ Seq("org.apache.cxf.tools.wsdlto.WSDLToJava") ++ args
 
         s.log.debug(cmd.toString())
-        cmd.foreach(s.log(_))
+        //Since std.Process has been removed in sbt 1.x.x, we have specific logic for the 0.13.x and 1.x.x series.
+        ProcessRunner.run(cmd, s.log)
         s.log.info("Finished " + id)
         IO.copyDirectory(output, (sourceManaged in CxfConfig).value, overwrite = true)
       }
