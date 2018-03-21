@@ -4,7 +4,7 @@ name := "sbt-cxf-wsdl2java"
 
 organization := "io.github.borisnaguet"
 
-version := "0.2.8-SNAPSHOT"
+version := "0.2.9-SNAPSHOT"
 
 crossSbtVersions := List("0.13.17", "1.1.1")
 
@@ -27,7 +27,7 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 bintrayRepository := "ivy"
 bintrayPackageLabels := Seq("sbt", "plugin", "cxf")
 
-pomExtra := (
+pomExtra := 
   <url>https://github.com/BorisNaguet/sbt-cxf-wsdl2java</url>
   <licenses>
     <license>
@@ -51,4 +51,4 @@ pomExtra := (
       <name>Boris Naguet</name>
       <url>https://github.com/BorisNaguet</url>
     </developer>
-  </developers>)
+  </developers>
